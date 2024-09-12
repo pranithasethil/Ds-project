@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linear Search Visualization</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: #f0f2f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            color: #333;
+            margin: 20px;
+        }
+
+        #visualization {
+            margin: 20px auto;
+            max-width: 800px;
+        }
+
+        #contact-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .contact-item {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 5px;
+            background: #ffffff;
+            border: 2px solid #007bff;
+            border-radius: 8px;
+            color: #007bff;
+            font-size: 18px;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .highlight {
+            background-color: #ffeb3b;
+            color: #000;
+            transform: scale(1.1);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        #controls {
+            margin-top: 20px;
+        }
+
+        input[type="number"] {
+            width: 100px;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #007bff;
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input[type="number"]:focus {
+            border-color: #0056b3;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #ffffff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .status-message {
+            margin: 20px;
+            font-size: 18px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Linear Search Visualization</h1>
+    
+    <div id="visualization">
+        <div id="contact-list"></div>
+        <div id="controls">
+            <button onclick="startLinearSearch()">Start Linear Search</button>
+            <input type="number" id="search-number" placeholder="Enter number">
+        </div>
+        <div id="status" class="status-message"></div>
+    </div>
+
+    <script>
+        const contactList = document.getElementById('contact-list');
+        const searchInput = document.getElementById('search-number');
+        const statusMessage = document.getElementById('status');
+
+        // Example contact list
+        let contacts = [123, 456, 789, 101, 202, 303, 404, 505, 606, 707];
+
+        function displayContacts(contacts, highlightIndex = -1) {
+            contactList.innerHTML = '';
+            contacts.forEach((contact, index) => {
+                const item = document.createElement('div');
+                item.className = 'contact-item';
+                if (index === highlightIndex) {
+                    item.classList.add('highlight');
+                }
+                item.textContent = contact;
+                contactList.appendChild(item);
+            });
+        }
+
+        function startLinearSearch() {
+            const target = parseInt(searchInput.value);
+            if (isNaN(target)) return;
+            statusMessage.textContent = 'Starting Linear Search...';
+            document.querySelectorAll('button').forEach(btn => btn.disabled = true);
+            linearSearch(contacts, target);
+        }
+
+        function linearSearch(contacts, target) {
+            let index = 0;
+            const intervalId = setInterval(() => {
+                if (index >= contacts.length) {
+                    clearInterval(intervalId);
+                    statusMessage.textContent = 'Number not found!';
+                    document.querySelectorAll('button').forEach(btn => btn.disabled = false);
+                    return;
+                }
+
+                displayContacts(contacts, index);
+
+                if (contacts[index] === target) {
+                    displayContacts(contacts, index);
+                    statusMessage.textContent = `Number found at index ${index}!`;
+                    clearInterval(intervalId);
+                    document.querySelectorAll('button').forEach(btn => btn.disabled = false);
+                } else {
+                    index++;
+                }
+            }, 1000);
+        }
+
+        displayContacts(contacts);
+    </script>
+</body>
+</html>
